@@ -14,4 +14,32 @@ The POC project creates a URL classloader that loads the jar dynamically.  The j
 To reproduce this issue:
 Build the simple-jython-plugin project (mvn clean install) and copy the generated jar file to  simple-python-launcher/src/main/resources/jars (assuming you don't change the code in the launcher), then build the simple-python-launcher (mvn clean install), which I'm expecting the unit test cases to pass, but instead fail.  I am leaving the .jar file in the resources for the launcher if you want to get straight to the point.
 
+Result from JUnit:
+
+```
+Running com.dirty.plugin.simple_jar_file.AppTest
+I WAS CONSTRUCTED SUCCESSFULLY!
+You input SampleTestInput
+Tests run: 2, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 3.57 sec <<< FAILURE!
+testApp(com.dirty.plugin.simple_jar_file.AppTest)  Time elapsed: 0.905 sec  <<< ERROR!
+java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.test.plugin.simple_jar_file.AppLoader.doSomething(AppLoader.java:23)
+	at com.dirty.plugin.simple_jar_file.AppTest.testApp(AppTest.java:19)
+Caused by: java.lang.ClassCastException: org.python.core.PySingleton cannot be cast to com.dirty.plugin.simple_jython_plugin.PyInterface
+	at com.dirty.plugin.simple_jython_plugin.App.makePyInterface(App.java:35)
+	... 34 more
+
+
+Results :
+
+Tests in error: 
+  testApp(com.dirty.plugin.simple_jar_file.AppTest)
+
+Tests run: 2, Failures: 0, Errors: 1, Skipped: 0
+```
+
 My question:  Why is my use case not working and what do I need to do to make this use case work?  Restarting the JVM is not considered an acceptable answer to this response as it fundamentally breaks the use case I must work with.
